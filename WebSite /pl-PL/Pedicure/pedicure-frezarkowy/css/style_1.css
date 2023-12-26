@@ -1053,13 +1053,7 @@ body.single.single-format-standard #main {
 .mejs-controls .mejs-time-rail .mejs-time-current {
   background: #333;
   background: rgba(200, 200, 200, 0.8) !important;
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(rgba(255, 255, 255, 0.9)),
-    to(rgba(200, 200, 200, 0.8))
-  ) !important;
+
   background: -o-linear-gradient(
     rgba(255, 255, 255, 0.9),
     rgba(200, 200, 200, 0.8)
@@ -1091,7 +1085,7 @@ body.single.single-format-standard #main {
   top: 0;
   cursor: pointer;
   padding: 6px 12px !important;
-  *background-color: #000;
+  /* *background-color: #000; */
   background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
   opacity: 0;
@@ -2120,22 +2114,7 @@ body.navigation-is-open .fixed-header {
   overflow-x: hidden;
   height: 100%;
 }
-.salon-half-block.salon-navigation::before {
-  content: "";
-  box-shadow: 0 11px 11px 3px rgba(0, 0, 0, 0.72);
-  display: block;
-  height: 12px;
-  position: absolute;
-  top: 94px;
-  left: 0;
-  right: 20px;
-  z-index: 1;
-  background: linear-gradient(
-    182deg,
-    rgba(6, 6, 6, 1) 0%,
-    rgba(0, 0, 0, 0.43) 100%
-  );
-}
+
 .salon-nav .salon-primary-nav li {
   list-style: none;
   position: relative;
@@ -5906,19 +5885,7 @@ body.page-template-page-service #content ul {
     height: 21vw;
   }
 }
-.page-template-page-service .order-form {
-  background: var(--wpr-bg-b9165697-9e2d-482c-86d3-e3eb588c88fa);
-  padding: 40px 32px 46px;
-  border-radius: 10px;
-  margin-bottom: 48px;
-}
-.page-template-page-service .order-form {
-  text-align: center;
-}
-.page-template-page-service .order-form .order-form__heading {
-  margin-bottom: 25px;
-  color: #fff !important;
-}
+
 .page-template-page-service #content input[type="text"],
 .page-template-page-service #content input[type="tel"] {
   background-color: #37373a !important;
@@ -6162,14 +6129,7 @@ body.page-template-page-service #content ul {
 .list-services .link-image img {
   transition: 200ms all;
 }
-@media (min-width: 768px) {
-  .list-items .item:nth-last-child(2) {
-    margin-left: 25.3%;
-  }
-  .list-items .item:last-child {
-    margin-right: 25.3%;
-  }
-}
+
 @media (max-width: 767px) {
   .list-items .item {
     width: 48%;
