@@ -1322,9 +1322,6 @@
         color: inherit;
         text-decoration: none;
       }
-      body {
-        background-color: #1d1b1b;
-      }
       body.navigation-is-open {
         overflow: hidden;
       }
@@ -1428,13 +1425,6 @@
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
       }
-      body {
-        margin: 0;
-        min-width: 100%;
-        height: 100%;
-        -webkit-backface-visibility: hidden;
-        font-family: montserrat, sans-serif;
-      }
       #main {
         display: block !important;
         position: relative;
@@ -1473,11 +1463,7 @@
       #content {
         position: relative;
       }
-      .page-content img,
-      .post-content img {
-        max-width: 100%;
-        height: auto;
-      }
+      
       .page-content h1,
       .page-content h2,
       .page-content h3,
@@ -3730,11 +3716,6 @@
         color: #c09e6f !important;
       }
      
-      #content a:not(.ms-btn):not(.vc_btn3),
-      #footer a,
-      .fancybox-inner a {
-        color: #c09e6f;
-      }
       .fancybox-inner {
         color: #210c20 !important;
       }
@@ -4104,6 +4085,32 @@
         </div>
       </div>
       <div class="lang-dropdown js-lang-dropdown">
+        <div class="social-icons">
+          <a href="https://instagram.com/svbeauty_warszawa?igshid=OGQ5ZDc2ODk2ZA%3D%3D&amp;utm_source=qr" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="instagram icon" src="../../icons/instagram.png"><noscript><img
+                width="25"
+                height="25"
+                alt="instagram icon"
+                src="/wp-content/themes/salon/images/Group%2049.svg"
+            /></noscript>
+          </a>
+          <a href="https://www.facebook.com/SVBeautyWaw?mibextid=ZbWKwL" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="facebook icon" src="../../icons/facebook.png"><noscript><img
+                width="25"
+                height="25"
+                alt="facebook icon"
+                src="../../icons/facebook.png"
+            /></noscript>
+          </a>
+          <a href="https://svbeautystudio.booksy.com" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="facebook icon" src="../../icons/booksy-icon-filled-256.webp"><noscript><img
+                width="25"
+                height="25"
+                alt="facebook icon"
+                src="../../iconsbooksy-icon-filled-256.webp"
+            /></noscript>
+          </a>
+        </div>
         <div class="lang-dropdown__control">
           <span class="lang-dropdown__text"> pl </span>
         </div>
@@ -4124,7 +4131,7 @@
           </li>
         </ul>
       </div>
-
+ 
       <div class="booking-button-header">
         <a
           class="btn-booking btn-booking--border"
@@ -4160,230 +4167,62 @@
                 >
                   <a href="../StronaGlowna/index.html">Strona główna</a>
                 </li>
-
-                <li
-                  id="menu-item-22767"
-                  class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-22767"
-                  data-text="Blog o urodzie"
-                >
-                  <a href="../BlogUrodzie/blog.html">Blog o urodzie</a>
-                </li>
-                <li
-                id="menu-item-22767"
-                class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-22767"
-                data-text="Blog o urodzie"
-              >
-                <a href="../Depilacja/Depilacja.html">Depilacja</a>
-              </li>
-                <li
-                  id="menu-item-16757"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-16757"
-                  data-text="Manicure"
-                >
-                  <a
-                    href="../Manicure/ManicureDlaKobiet/manicure.html"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
-                    >Manicure</a
-                  >
-                  <ul class="dropdown-menu depth_0">
-                    <li
-                      id="menu-item-16796"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16796"
-                      data-text="Manicure dla kobiet"
-                    >
-                      <a href="../Manicure/ManicureDlaKobiet/manicure.html"
-                        >Manicure dla kobiet</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16905"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16905"
-                      data-text="Manicure męski"
-                    >
-                      <a href="../Manicure/ManicureMeski/manicure-meski.html"
-                        >Manicure męski</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16758"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16758"
-                      data-text="Manicure francuski"
+                
+                              <li
+                              id="menu-item-16796"
+                              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16796"
+                              data-text="Manicure dla kobiet"
+                            >
+                              <a href="../ManicureDlaKobiet/manicure.html"
+                                >Manicure dla kobiet</a
+                              >
+                            </li>
+                            <li
+                            id="menu-item-16816"
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16816"
+                            data-text="Pedicure"
+                          >
+                            <a href="../PedicureDamski/pedicure.html"
+                              >Pedicure</a
+                            >
+                          </li>
+                
+              <li
+                      id="menu-item-16896"
+                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16896"
+                      data-text="Barber"
                     >
                       <a
-                        href="../Manicure/ManicureFrancuski/manicure-francuski.html"
-                        >Manicure francuski</a
+                        href="../Barber/Barber.html"
+                        >Barber</a
                       >
                     </li>
-                    <li
-                      id="menu-item-16774"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16774"
-                      data-text="Manicure frezarkowy"
-                    >
-                      <a
-                        href="../Manicure/ManicureFrezarkowy/manicure-frezarkowy.html"
-                        >Manicure frezarkowy</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16786"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16786"
-                      data-text="Manicure hybrydowy"
-                    >
-                      <a
-                        href="../Manicure/ManicureHybrydowy/manicure-hybrydowy.html"
-                        >Manicure hybrydowy</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-20134"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20134"
-                      data-text="Manicure ślubny"
-                    >
-                      <a href="../Manicure/Slubny/slubny.html"
-                        >Manicure ślubny</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li
-                  id="menu-item-16809"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-16809"
-                  data-text="Pedicure"
-                >
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                    >Pedicure</a
-                  >
-                  <ul class="dropdown-menu depth_0">
-                    <li
-                      id="menu-item-16816"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16816"
-                      data-text="Pedicure damski"
-                    >
-                      <a href="../Pedicure/PedicureDamski/pedicure.html"
-                        >Pedicure damski</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16833"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16833"
-                      data-text="Pedicure męski"
-                    >
-                      <a href="../Pedicure/pedicureMeski/pedicure-meski.html"
-                        >Pedicure męski</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16808"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16808"
-                      data-text="Pedicure frezarkowy"
-                    >
-                      <a
-                        href="../Pedicure/pedicure-frezarkowy/pedicure-frezarkowy.html"
-                        >Pedicure frezarkowy</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16842"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16842"
-                      data-text="Pedicure hybrydowy"
-                    >
-                      <a
-                        href="../Pedicure/pedicure-hybrydowy/pedicure-hybrydowy.html"
-                        >Pedicure hybrydowy</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-22702"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22702"
-                      data-text="Podologia"
-                    >
-                      <a href="../Pedicure/podology/podology.html">Podologia</a>
-                    </li>
-                  </ul>
-                </li>
-                <li
-                  id="menu-item-16885"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-16885"
-                  data-text="Brwi i rzęsy"
-                >
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                    >Brwi i rzęsy</a
-                  >
-                  <ul class="dropdown-menu depth_0">
                     <li
                       id="menu-item-16884"
                       class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16884"
                       data-text="Koloryzacja i regulacja brwi"
                     >
                       <a
-                        href="../BrwiRzesy/koloryzacja-brwi/koloryzacja-brwi.html"
+                        href="../koloryzacja-brwi/koloryzacja-brwi.html"
                         >Koloryzacja i regulacja brwi</a
                       >
                     </li>
                     <li
-                      id="menu-item-16896"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16896"
-                      data-text="Laminowanie brwi"
-                    >
-                      <a
-                        href="../BrwiRzesy/laminowanie-brwi/laminowanie-brwi.html"
-                        >Laminowanie brwi</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li
-                  id="menu-item-16885"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-16885"
-                  data-text="Strzyzenie"
-                >
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                    >Strzyzenie</a
-                  >
-                  <ul class="dropdown-menu depth_0">
-                    <li
-                      id="menu-item-16884"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16884"
-                      data-text="Strzyzenie damskie"
-                    >
-                      <a
-                        href="../StrzyzenieDamskie/strzyzenie-damskie.html"
-                        >Strzyzenie damskie</a
-                      >
-                    </li>
-                    <li
-                      id="menu-item-16896"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16896"
-                      data-text="Strzyzenie Meskie"
-                    >
-                      <a
-                        href="../StrzyzenieMeskie/strzyzenie-meskie.html"
-                        >Strzyzenie Meskie</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li
-                  id="menu-item-17300"
-                  class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-17300"
-                  data-text="O nas"
-                >
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                    >O nas</a
-                  >
-                  <ul class="dropdown-menu depth_0">
-                    <li
-                      id="menu-item-20418"
-                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20418"
-                      data-text="Opinie naszych klientów"
-                    >
-                      <a href="../OpinieNaszychklientow/reviewsfls.html"
-                        >Opinie naszych klientów</a
-                      >
-                    </li>
-                  </ul>
-                </li>
+                id="menu-item-22767"
+                class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-22767"
+                data-text="Blog o urodzie"
+              >
+                <a href="../Depilacja/Depilacja.html">Depilacja</a>
+              </li>
+              <li
+              id="menu-item-20418"
+              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20418"
+              data-text="O nas"
+            >
+              <a href="../OpinieNaszychklientow/reviewsfls.html"
+                >O nas</a
+              >
+            </li>
                 <li
                   id="menu-item-18068"
                   class="menu-item menu-item-type-post_type_archive menu-item-object-salon menu-item-18068"
@@ -4467,11 +4306,75 @@
                           >
                             <div class="wpb_wrapper">
                               <h4 style="text-align: center">
-                                Manicure Pedicure Fryzjerstwo SV Helena
+                                Manicure Pedicure Fryzjerstwo SV Beauty Studio
                               </h4>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="list-salon vl-row">
+                    <div class="meta-info vl-row">
+                      <div class="info-salon">
+                        <div class="thumb">
+                          <a href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu">
+                            <img
+                              src="../../images/salon-door.png"
+                              alt="SV Beauty Studio os Avia Krakow"
+                            />
+                          </a>
+                        </div>
+                        <div class="descrip">
+                          <div class="info-item the-title">
+                            <a href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu"
+                              >Warszawa, Józefa Bellottiego</a
+                            >
+                            
+                          </div>
+                          <div class="info-item address">
+                            <i
+                              data-fip-value="fas fa-map-marker-alt"
+                              class="fas fa-map-marker-alt"
+                            ></i
+                            >Józefa Bellottiego 1/lokal 13, 01-022 Warszawa
+                            <a
+                              href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu"
+                              target="_blank"
+                              class="address-g-maps"
+                              ><img
+                                width="300"
+                                height="56"
+                                src="../../icons/Google_Maps-Logo.wine-300.svg"
+                                data-ll-status="loaded"
+                                class="entered lazyloaded" /><noscript>
+                                <img
+                                  width="300"
+                                  height="56"
+                                  src="../../icons/Google_Maps-Logo.wine-300.svg"
+                                  alt="" /></noscript
+                            ></a>
+                          </div>
+                          <div class="info-item">
+                            <i
+                              data-fip-value="fas fa-mobile-alt"
+                              class="fas fa-mobile-alt"
+                            ></i
+                            ><a href="tel:+48574070284">+48 728 296 068</a>
+                          </div>
+                          <div class="form-sign">
+                            <div class="contacts__item">
+                              <a
+                                class="contacts__btn btn-booking"
+                                href="https://svbeautystudio.booksy.com"
+                              >
+                                umów wizytę <span>-10%</span>
+                              </a>
                             </div>
                           </div>
                         </div>
+                        <div class="clear"></div>
                       </div>
                     </div>
                   </div>

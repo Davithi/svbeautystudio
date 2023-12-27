@@ -858,11 +858,11 @@ body.single #main > .container #content {
 #content {
   position: relative;
 }
-.page-content img,
+/* .page-content img,
 .post-content img {
   max-width: 100%;
   height: auto;
-}
+} */
 .page-content h1,
 .page-content h2,
 .page-content h3,
@@ -3392,4 +3392,56 @@ textarea {
 /* Эффект мигания курсора */
 @keyframes blink-caret {
   from, to { border-color: transparent }
+}
+
+
+.post-type-archive-salon .salon .additional, .post-type-archive-salon .salon .vl-row{
+  margin-bottom: 40px;
+}
+#content, #footer, .tooltipsy {
+  font-size: 18px;
+  line-height: 1.4em;
+  color: #210c20;
+}
+.info-salon{
+  display: flex;
+  gap: 20px;
+}
+.the-title a{
+color: black;
+font-size: 25px;
+font-weight:700 ;
+}
+.info-salon .thumb {
+  float: left;
+  margin-right: 15px;
+  line-height: 0;
+}
+.thumb a img {
+  max-width: 500px;
+}
+.info-salon .descrip {
+  display: table;
+}
+.info-salon .info-item.address {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.info-salon .the-title {
+  font-weight: 700;
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+.info-salon .info-item {
+  padding: 3px 0;
+}
+
+.meta-info{
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

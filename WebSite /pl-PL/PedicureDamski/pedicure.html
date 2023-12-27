@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="pl-PL" prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      if (
+        navigator.userAgent.match(/MSIE|Internet Explorer/i) ||
+        navigator.userAgent.match(/Trident\/7\..*?rv:11/i)
+      ) {
+        var href = document.location.href;
+        if (!href.match(/[?&]nowprocket/)) {
+          if (href.indexOf("?") == -1) {
+            if (href.indexOf("#") == -1) {
+              document.location.href = href + "?nowprocket=1";
+            } else {
+              document.location.href = href.replace("#", "?nowprocket=1#");
+            }
+          } else {
+            if (href.indexOf("#") == -1) {
+              document.location.href = href + "&nowprocket=1";
+            } else {
+              document.location.href = href.replace("#", "&nowprocket=1#");
+            }
+          }
+        }
+      }
+    </script>
+    <script>
+      class RocketLazyLoadScripts {
+        constructor() {
+          (this.v = "1.2.4"),
+            (this.triggerEvents = [
+              "keydown",
+              "mousedown",
+              "mousemove",
+              "touchmove",
+              "touchstart",
+              "touchend",
+              "wheel",
+            ]),
+            (this.userEventHandler = this._triggerListener.bind(this)),
+            (this.touchStartHandler = this._onTouchStart.bind(this)),
+            (this.touchMoveHandler = this._onTouchMove.bind(this)),
+            (this.touchEndHandler = this._onTouchEnd.bind(this)),
+            (this.clickHandler = this._onClick.bind(this)),
+            (this.interceptedClicks = []),
+            window.addEventListener("pageshow", (t) => {
+              this.persisted = t.persisted;
+            }),
+            window.addEventListener("DOMContentLoaded", () => {
+              this._preconnect3rdParties();
+            }),
+            (this.delayedScripts = { normal: [], async: [], defer: [] }),
+            (this.trash = []),
+            (this.allJQueries = []);
+        }
+        _addUserInteractionListener(t) {
+          if (document.hidden) {
+            t._triggerListener();
+            return;
+          }
+          this.triggerEvents.forEach((e) =>
+            window.addEventListener(e, t.userEventHandler, { passive: !0 })
+          ),
+            window.addEventListener("touchstart", t.touchStartHandler, {
+              passive: !0,
+            }),
+            window.addEventListener("mousedown", t.touchStartHandler),
+            document.addEventListener("visibilitychange", t.userEventHandler);
+        }
+        _removeUserInteractionListener() {
+          this.triggerEvents.forEach((t) =>
+            window.removeEventListener(t, this.userEventHandler, {
+              passive: !0,
+            })
+          ),
+            document.removeEventListener(
+              "visibilitychange",
+              this.userEventHandler
+            );
+        }
+        _onTouchStart(t) {
+          "HTML" !== t.target.tagName &&
+            (window.addEventListener("touchend", this.touchEndHandler),
+            window.addEventListener("mouseup", this.touchEndHandler),
+            window.addEventListener("touchmove", this.touchMoveHandler, {
+              passive: !0,
+            }),
+            window.addEventListener("mousemove", this.touchMoveHandler),
+            t.target.addEventListener("click", this.clickHandler),
+            this._renameDOMAttribute(t.target, "onclick", "rocket-onclick"),
+            this._pendingClickStarted());
+        }
+        _onTouchMove(t) {
+          window.removeEventListener("touchend", this.touchEndHandler),
+            window.removeEventListener("mouseup", this.touchEndHandler),
+            window.removeEventListener("touchmove", this.touchMoveHandler, {
+              passive: !0,
+            }),
+            window.removeEventListener("mousemove", this.touchMoveHandler),
+            t.target.removeEventListener("click", this.clickHandler),
+            this._renameDOMAttribute(t.target, "rocket-onclick", "onclick"),
+            this._pendingClickFinished();
+        }
+        _onTouchEnd() {
+          window.removeEventListener("touchend", this.touchEndHandler),
+            window.removeEventListener("mouseup", this.touchEndHandler),
+            window.removeEventListener("touchmove", this.touchMoveHandler, {
+              passive: !0,
+            }),
+            window.removeEventListener("mousemove", this.touchMoveHandler);
+        }
+        _onClick(t) {
+          t.target.removeEventListener("click", this.clickHandler),
+            this._renameDOMAttribute(t.target, "rocket-onclick", "onclick"),
+            this.interceptedClicks.push(t),
+            t.preventDefault(),
+            t.stopPropagation(),
+            t.stopImmediatePropagation(),
+            this._pendingClickFinished();
+        }
+        _replayClicks() {
+          window.removeEventListener("touchstart", this.touchStartHandler, {
+            passive: !0,
+          }),
+            window.removeEventListener("mousedown", this.touchStartHandler),
+            this.interceptedClicks.forEach((t) => {
+              t.target.dispatchEvent(
+                new MouseEvent("click", {
+                  view: t.view,
+                  bubbles: !0,
+                  cancelable: !0,
+                })
+              );
+            });
+        }
+        _waitForPendingClicks() {
+          return new Promise((t) => {
+            this._isClickPending ? (this._pendingClickFinished = t) : t();
+          });
+        }
+        _pendingClickStarted() {
+          this._isClickPending = !0;
+        }
+        _pendingClickFinished() {
+          this._isClickPending = !1;
+        }
+        _renameDOMAttribute(t, e, r) {
+          t.hasAttribute &&
+            t.hasAttribute(e) &&
+            (event.target.setAttribute(r, event.target.getAttribute(e)),
+            event.target.removeAttribute(e));
+        }
+        _triggerListener() {
+          this._removeUserInteractionListener(this),
+            "loading" === document.readyState
+              ? document.addEventListener(
+                  "DOMContentLoaded",
+                  this._loadEverythingNow.bind(this)
+                )
+              : this._loadEverythingNow();
+        }
+        _preconnect3rdParties() {
+          let t = [];
+          document
+            .querySelectorAll(
+              "script[type=rocketlazyloadscript][data-rocket-src]"
+            )
+            .forEach((e) => {
+              let r = e.getAttribute("data-rocket-src");
+              if (r && 0 !== r.indexOf("data:")) {
+                0 === r.indexOf("//") && (r = location.protocol + r);
+                try {
+                  let i = new URL(r).origin;
+                  i !== location.origin &&
+                    t.push({
+                      src: i,
+                      crossOrigin:
+                        e.crossOrigin ||
+                        "module" === e.getAttribute("data-rocket-type"),
+                    });
+                } catch (n) {}
+              }
+            }),
+            (t = [...new Map(t.map((t) => [JSON.stringify(t), t])).values()]),
+            this._batchInjectResourceHints(t, "preconnect");
+        }
+        async _loadEverythingNow() {
+          (this.lastBreath = Date.now()),
+            this._delayEventListeners(),
+            this._delayJQueryReady(this),
+            this._handleDocumentWrite(),
+            this._registerAllDelayedScripts(),
+            this._preloadAllScripts(),
+            await this._loadScriptsFromList(this.delayedScripts.normal),
+            await this._loadScriptsFromList(this.delayedScripts.defer),
+            await this._loadScriptsFromList(this.delayedScripts.async);
+          try {
+            await this._triggerDOMContentLoaded(),
+              await this._pendingWebpackRequests(this),
+              await this._triggerWindowLoad();
+          } catch (t) {
+            console.error(t);
+          }
+          window.dispatchEvent(new Event("rocket-allScriptsLoaded")),
+            this._waitForPendingClicks().then(() => {
+              this._replayClicks();
+            }),
+            this._emptyTrash();
+        }
+        _registerAllDelayedScripts() {
+          document
+            .querySelectorAll("script[type=rocketlazyloadscript]")
+            .forEach((t) => {
+              t.hasAttribute("data-rocket-src")
+                ? t.hasAttribute("async") && !1 !== t.async
+                  ? this.delayedScripts.async.push(t)
+                  : (t.hasAttribute("defer") && !1 !== t.defer) ||
+                    "module" === t.getAttribute("data-rocket-type")
+                  ? this.delayedScripts.defer.push(t)
+                  : this.delayedScripts.normal.push(t)
+                : this.delayedScripts.normal.push(t);
+            });
+        }
+        async _transformScript(t) {
+          if (
+            (await this._littleBreath(),
+            !0 === t.noModule && "noModule" in HTMLScriptElement.prototype)
+          ) {
+            t.setAttribute("data-rocket-status", "skipped");
+            return;
+          }
+          return new Promise(
+            navigator.userAgent.indexOf("Firefox/") > 0 ||
+            "" === navigator.vendor
+              ? (e) => {
+                  let r = document.createElement("script");
+                  [...t.attributes].forEach((t) => {
+                    let e = t.nodeName;
+                    "type" !== e &&
+                      ("data-rocket-type" === e && (e = "type"),
+                      "data-rocket-src" === e && (e = "src"),
+                      r.setAttribute(e, t.nodeValue));
+                  }),
+                    t.text && (r.text = t.text),
+                    r.hasAttribute("src")
+                      ? (r.addEventListener("load", e),
+                        r.addEventListener("error", e))
+                      : ((r.text = t.text), e());
+                  try {
+                    t.parentNode.replaceChild(r, t);
+                  } catch (i) {
+                    e();
+                  }
+                }
+              : (e) => {
+                  function r() {
+                    t.setAttribute("data-rocket-status", "failed"), e();
+                  }
+                  try {
+                    let i = t.getAttribute("data-rocket-type"),
+                      n = t.getAttribute("data-rocket-src");
+                    i
+                      ? ((t.type = i), t.removeAttribute("data-rocket-type"))
+                      : t.removeAttribute("type"),
+                      t.addEventListener("load", function r() {
+                        t.setAttribute("data-rocket-status", "executed"), e();
+                      }),
+                      t.addEventListener("error", r),
+                      n
+                        ? (t.removeAttribute("data-rocket-src"), (t.src = n))
+                        : (t.src =
+                            "data:text/javascript;base64," +
+                            window.btoa(unescape(encodeURIComponent(t.text))));
+                  } catch (s) {
+                    r();
+                  }
+                }
+          );
+        }
+        async _loadScriptsFromList(t) {
+          let e = t.shift();
+          return e && e.isConnected
+            ? (await this._transformScript(e), this._loadScriptsFromList(t))
+            : Promise.resolve();
+        }
+        _preloadAllScripts() {
+          this._batchInjectResourceHints(
+            [
+              ...this.delayedScripts.normal,
+              ...this.delayedScripts.defer,
+              ...this.delayedScripts.async,
+            ],
+            "preload"
+          );
+        }
+        _batchInjectResourceHints(t, e) {
+          var r = document.createDocumentFragment();
+          t.forEach((t) => {
+            let i =
+              (t.getAttribute && t.getAttribute("data-rocket-src")) || t.src;
+            if (i) {
+              let n = document.createElement("link");
+              (n.href = i),
+                (n.rel = e),
+                "preconnect" !== e && (n.as = "script"),
+                t.getAttribute &&
+                  "module" === t.getAttribute("data-rocket-type") &&
+                  (n.crossOrigin = !0),
+                t.crossOrigin && (n.crossOrigin = t.crossOrigin),
+                t.integrity && (n.integrity = t.integrity),
+                r.appendChild(n),
+                this.trash.push(n);
+            }
+          }),
+            document.head.appendChild(r);
+        }
+        _delayEventListeners() {
+          let t = {};
+          function e(e, r) {
+            !(function e(r) {
+              !t[r] &&
+                ((t[r] = {
+                  originalFunctions: {
+                    add: r.addEventListener,
+                    remove: r.removeEventListener,
+                  },
+                  eventsToRewrite: [],
+                }),
+                (r.addEventListener = function () {
+                  (arguments[0] = i(arguments[0])),
+                    t[r].originalFunctions.add.apply(r, arguments);
+                }),
+                (r.removeEventListener = function () {
+                  (arguments[0] = i(arguments[0])),
+                    t[r].originalFunctions.remove.apply(r, arguments);
+                }));
+              function i(e) {
+                return t[r].eventsToRewrite.indexOf(e) >= 0 ? "rocket-" + e : e;
+              }
+            })(e),
+              t[e].eventsToRewrite.push(r);
+          }
+          function r(t, e) {
+            let r = t[e];
+            Object.defineProperty(t, e, {
+              get: () => r || function () {},
+              set(i) {
+                t["rocket" + e] = r = i;
+              },
+            });
+          }
+          e(document, "DOMContentLoaded"),
+            e(window, "DOMContentLoaded"),
+            e(window, "load"),
+            e(window, "pageshow"),
+            e(document, "readystatechange"),
+            r(document, "onreadystatechange"),
+            r(window, "onload"),
+            r(window, "onpageshow");
+        }
+        _delayJQueryReady(t) {
+          let e;
+          function r(t) {
+            return t
+              .split(" ")
+              .map((t) =>
+                "load" === t || 0 === t.indexOf("load.")
+                  ? "rocket-jquery-load"
+                  : t
+              )
+              .join(" ");
+          }
+          function i(i) {
+            if (i && i.fn && !t.allJQueries.includes(i)) {
+              i.fn.ready = i.fn.init.prototype.ready = function (e) {
+                return (
+                  t.domReadyFired
+                    ? e.bind(document)(i)
+                    : document.addEventListener("rocket-DOMContentLoaded", () =>
+                        e.bind(document)(i)
+                      ),
+                  i([])
+                );
+              };
+              let n = i.fn.on;
+              (i.fn.on = i.fn.init.prototype.on =
+                function () {
+                  return (
+                    this[0] === window &&
+                      ("string" == typeof arguments[0] ||
+                      arguments[0] instanceof String
+                        ? (arguments[0] = r(arguments[0]))
+                        : "object" == typeof arguments[0] &&
+                          Object.keys(arguments[0]).forEach((t) => {
+                            let e = arguments[0][t];
+                            delete arguments[0][t], (arguments[0][r(t)] = e);
+                          })),
+                    n.apply(this, arguments),
+                    this
+                  );
+                }),
+                t.allJQueries.push(i);
+            }
+            e = i;
+          }
+          i(window.jQuery),
+            Object.defineProperty(window, "jQuery", {
+              get: () => e,
+              set(t) {
+                i(t);
+              },
+            });
+        }
+        async _pendingWebpackRequests(t) {
+          let e = document.querySelector("script[data-webpack]");
+          async function r() {
+            return new Promise((t) => {
+              e.addEventListener("load", t), e.addEventListener("error", t);
+            });
+          }
+          e &&
+            (await r(),
+            await t._requestAnimFrame(),
+            await t._pendingWebpackRequests(t));
+        }
+        async _triggerDOMContentLoaded() {
+          (this.domReadyFired = !0),
+            await this._littleBreath(),
+            document.dispatchEvent(new Event("rocket-DOMContentLoaded")),
+            await this._littleBreath(),
+            window.dispatchEvent(new Event("rocket-DOMContentLoaded")),
+            await this._littleBreath(),
+            document.dispatchEvent(new Event("rocket-readystatechange")),
+            await this._littleBreath(),
+            document.rocketonreadystatechange &&
+              document.rocketonreadystatechange();
+        }
+        async _triggerWindowLoad() {
+          await this._littleBreath(),
+            window.dispatchEvent(new Event("rocket-load")),
+            await this._littleBreath(),
+            window.rocketonload && window.rocketonload(),
+            await this._littleBreath(),
+            this.allJQueries.forEach((t) =>
+              t(window).trigger("rocket-jquery-load")
+            ),
+            await this._littleBreath();
+          let t = new Event("rocket-pageshow");
+          (t.persisted = this.persisted),
+            window.dispatchEvent(t),
+            await this._littleBreath(),
+            window.rocketonpageshow &&
+              window.rocketonpageshow({ persisted: this.persisted });
+        }
+        _handleDocumentWrite() {
+          let t = new Map();
+          document.write = document.writeln = function (e) {
+            let r = document.currentScript;
+            r || console.error("WPRocket unable to document.write this: " + e);
+            let i = document.createRange(),
+              n = r.parentElement,
+              s = t.get(r);
+            void 0 === s && ((s = r.nextSibling), t.set(r, s));
+            let a = document.createDocumentFragment();
+            i.setStart(a, 0),
+              a.appendChild(i.createContextualFragment(e)),
+              n.insertBefore(a, s);
+          };
+        }
+        async _littleBreath() {
+          Date.now() - this.lastBreath > 45 &&
+            (await this._requestAnimFrame(), (this.lastBreath = Date.now()));
+        }
+        async _requestAnimFrame() {
+          return document.hidden
+            ? new Promise((t) => setTimeout(t))
+            : new Promise((t) => requestAnimationFrame(t));
+        }
+        _emptyTrash() {
+          this.trash.forEach((t) => t.remove());
+        }
+        static run() {
+          let t = new RocketLazyLoadScripts();
+          t._addUserInteractionListener(t);
+        }
+      }
+      RocketLazyLoadScripts.run();
+    </script>
+   
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="format-detection" content="telephone=no" />
+
+    
+    <title>
+      Pedicure damski w , Warszawie, cena w salonie | SV Beauty Studio
+    </title>
+
+    <meta
+      name="description"
+      content="Pedicure w salonie Krakowa, Warszawie ✿ SV Beauty Studio ✿ Modne pedicure u stóp blisko domu ✔️ Rezerwuj online ✔️ Wykwalifikowani mistrzowie ✔️ Gwarancja jakości ✔️ Sterylność ✔️ Najlepsze materiały ✔️ Blisko Ciebie"
+    />
+    <meta name="robots" content="max-image-preview:large" />
+  
+    <meta property="og:type" content="activity" />
+    <meta
+      property="og:title"
+      content="Pedicure damski w  Warszawie, cena w salonie | SV Beauty Studio"
+    />
+    <meta
+      property="og:description"
+      content="Pedicure w salonie Krakowa, Warszawie ✿ SV Beauty Studio ✿ Modne pedicure u stóp blisko domu ✔️ Rezerwuj online ✔️ Wykwalifikowani mistrzowie ✔️ Gwarancja jakości ✔️ Sterylność ✔️ Najlepsze materiały ✔️ Blisko Ciebie"
+    />
+
+   
+    <meta
+      name="twitter:description"
+      content="Pedicure w salonie Krakowa, Warszawie ✿ SV Beauty Studio ✿ Modne pedicure u stóp blisko domu ✔️ Rezerwuj online ✔️ Wykwalifikowani mistrzowie ✔️ Gwarancja jakości ✔️ Sterylność ✔️ Najlepsze materiały ✔️ Blisko Ciebie"
+    />
+  
+
+    <link
+      rel="stylesheet"
+      id="wp-block-library-css"
+      href="css/style.min.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="contact-form-7-css"
+      href="css/styles.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="style-css-css"
+      href="css/style.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="js_composer_front-css"
+      href="css/js_composer.min.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="style-css"
+      href="css/style_1.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="slick-style-salon-css"
+      href="css/slick.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="slick-style-theme-salon-css"
+      href="css/slick-theme.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="table-price-css"
+      href="css/table-price.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      data-minify="1"
+      rel="stylesheet"
+      id="custom-slider-css"
+      href="css/custom-slider.css"
+      type="text/css"
+      media="all"
+    />
+    <link
+      rel="stylesheet"
+      id="fancybox-css"
+      href="css/jquery.fancybox.min.css"
+      type="text/css"
+      media="all"
+    />
+    <style id="rocket-lazyload-inline-css" type="text/css">
+      .rll-youtube-player {
+        position: relative;
+        padding-bottom: 56.23%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+      }
+      .rll-youtube-player:focus-within {
+        outline: 2px solid currentColor;
+        outline-offset: 5px;
+      }
+      .rll-youtube-player iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        background: 0 0;
+      }
+      .rll-youtube-player img {
+        bottom: 0;
+        display: block;
+        left: 0;
+        margin: auto;
+        max-width: 100%;
+        width: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border: none;
+        height: auto;
+        -webkit-transition: 0.4s all;
+        -moz-transition: 0.4s all;
+        transition: 0.4s all;
+      }
+      .rll-youtube-player img:hover {
+        -webkit-filter: brightness(75%);
+      }
+      .rll-youtube-player .play {
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+        position: absolute;
+        background: var(--wpr-bg-88aff6be-a948-47a3-b1b9-0ff27a9fa1b0) no-repeat
+          center;
+        background-color: transparent !important;
+        cursor: pointer;
+        border: none;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="js/jquery-2.2.4.min.js"
+      id="jquery-core-js"
+      defer=""
+    ></script>
+    <script type="rocketlazyloadscript"></script>
+    <link
+      rel="alternate"
+      href="https://fastlinestudio.pl/cennik/pedicure/"
+      hreflang="pl-PL"
+    />
+    <link
+      rel="alternate"
+      href="https://fastlinestudio.pl/ru/cennik/pedicure/"
+      hreflang="ru-PL"
+    />
+    <link
+      rel="alternate"
+      href="https://fastlinestudio.pl/uk/cennik/pedicure/"
+      hreflang="uk-PL"
+    />
+    <link
+      rel="alternate"
+      href="https://fastline.studio/ru/services/pedicure/"
+      hreflang="ru-UA"
+    />
+    <link
+      rel="alternate"
+      href="https://fastline.studio/services/pedicure/"
+      hreflang="uk-UA"
+    />
+    <link
+      rel="alternate"
+      href="https://fastlinestudio.pl/cennik/pedicure/"
+      hreflang="x-default"
+    />
+    <script
+      type="rocketlazyloadscript"
+      async=""
+      data-rocket-src="https://www.googletagmanager.com/gtag/js?id=UA-232893737-1"
+    ></script>
+    <script type="rocketlazyloadscript">
+      window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-232893737-1');
+    </script>
+
+    <style type="text/css">
+      @media only screen and (min-width: 1212px) {
+        .container {
+          padding: 0;
+          width: 1212px;
+        }
+        #content {
+          width: 792px;
+        }
+        #sidebar {
+          width: 312px;
+        }
+      } /* Body Background Styling */
+      #main {
+        background-color: #ffffff;
+        background-repeat: inherit;
+      } /* Layout and Layout Styling */
+      #main.header-slider-active > .container,
+      #main.footer-slider-active > .container {
+        padding-top: 0px;
+      }
+      
+      #footer-widget-bar h1,
+      #footer-widget-bar h2,
+      #footer-widget-bar h3,
+      #footer-widget-bar h4,
+      #footer-widget-bar h5,
+      #footer-widget-bar h6,
+      #back-to-top-wrapper a,
+      #back-to-top-wrapper a span,
+      .ozy-twitter-widget-icon > span,
+      #footer-widget-bar #social-icons > a > span,
+      .info-bar *,
+      .info-bar .heading-font {
+        color: #ffffff;
+      }
+      #footer *,
+      #footer-widget-bar *,
+      #footer-widget-bar-sticky #close-footer-info-bar {
+        color: #ffffff;
+      }
+      #footer a,
+      #footer-widget-bar a,
+      .ozy-twitter-widget div > span {
+        color: #ffffff !important;
+      }
+    
+     
+    
+      #footer > footer > .container hr {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      } /* Header Over Primary Menu Styling */
+      .logo h1 > a {
+        color: rgba(255, 255, 255, 1);
+      }
+      .salon-navigation-wrapper,
+      .salon-nav-trigger,
+     
+      .salon-nav .salon-primary-nav,
+      .salon-nav .salon-primary-nav a {
+        font-size: 23px;
+        line-height: 2em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .salon-nav .salon-primary-nav > li li,
+      .salon-nav .salon-primary-nav > li li a {
+        font-size: 16px;
+        line-height: 1.8em;
+      }
+      .salon-nav .salon-primary-nav > li li:after {
+        top: 15.000032608767px;
+      }
+      .salon-navigation-wrapper .salon-half-block {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .salon-nav-trigger .salon-nav-icon {
+        background-color: rgba(255, 255, 255, 1);
+      }
+      .salon-nav-trigger svg > circle {
+        stroke: rgba(255, 255, 255, 0.7);
+      }
+      .salon-nav .salon-primary-nav a.selected,
+      .no-touch .salon-nav .salon-primary-nav a:hover,
+      .salon-nav .salon-contact-info a,
+      li.menu-item.current-menu-item > a,
+      li.menu-item.current_page_ancestor > a {
+        color: rgb(255, 255, 255);
+      }
+      .primary-menu-bar-wrapper ul.menu li {
+        font-size: 23px;
+        line-height: 2em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .primary-menu-bar-wrapper #menu-social-icons > div {
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+      .primary-menu-bar-wrapper #menu-social-icons > a > span,
+      .primary-menu-bar-wrapper ul.menu li a {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .primary-menu-bar-wrapper #menu-social-icons > a:hover > span,
+      .primary-menu-bar-wrapper ul.menu li:not(.dropdown):hover a {
+        color: rgba(255, 255, 255, 1);
+      }
+      .primary-menu-bar-wrapper nav:before {
+        background-color: rgba(0, 0, 0, 1);
+      }
+      .primary-menu-bar-wrapper button:before {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 0.25em 0 0 rgba(255, 255, 255, 1),
+          0 0.5em 0 0 rgba(255, 255, 255, 1);
+      }
+      body.ozy-logo-alternate .primary-menu-bar-wrapper button:before {
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0.25em 0 0 rgba(255, 255, 255, 0.7),
+          0 0.5em 0 0 rgba(255, 255, 255, 0.7);
+      }
+      .primary-menu-bar-wrapper button.two:before {
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0.25em 0 0 rgba(255, 255, 255, 0.4),
+          0 0.5em 0 0 rgba(255, 255, 255, 0.4);
+      }
+      body.ozy-logo-alternate .primary-menu-bar-wrapper button.two:before {
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0.25em 0 0 rgba(255, 255, 255, 0.4),
+          0 0.5em 0 0 rgba(255, 255, 255, 0.4);
+      } /* Language Switcher */
+      .lang-switcher-booking-button-wrapper {
+        background-color: rgba(255, 255, 255, 1);
+        border-color: rgba(255, 255, 255, 1);
+      }
+      .lang-switcher-booking-button-wrapper > div > a,
+      .lang-switcher-booking-button-wrapper > div > span {
+        color: rgba(0, 0, 0, 1);
+      } /* Widgets */
+      .widget li > a {
+        color: #210c20 !important;
+      }
+      .widget li > a:hover {
+        color: #c09e6f !important;
+      }
+      .ozy-latest-posts > a > span,
+      .lSSlideOuter .lSPager.lSpg > li.active a,
+      .lSSlideOuter .lSPager.lSpg > li:hover a {
+        background-color: #c09e6f;
+        color: #210c20;
+      } /* Page Styling and Typography */
+      .content-color-alternate,
+      .content-color-alternate a,
+      .content-color-alternate p {
+        color: #c09e6f !important;
+      }
+      .content-color-alternate2,
+      .content-color-alternate2 a,
+      .content-color-alternate2 p {
+        color: #585558 !important;
+      }
+      .content-color-alternate3,
+      .content-color-alternate3 a,
+      .content-color-alternate3 p {
+        color: #ffffff !important;
+      }
+      .content-color-alternate4,
+      .nav-box > h4,
+      .nav-box > a > span,
+      h4.ozy-related-posts-title {
+        color: #000000 !important;
+      }
+      .heading-color,
+      .heading-color a,
+      h1.content-color > a,
+      h2.content-color > a,
+      h3.content-color > a,
+      h4.content-color > a,
+      h5.content-color > a,
+      h6.content-color > a,
+      blockquote,
+      .a-page-title {
+        color: #000000 !important;
+      }
+    
+      .content-font-family {
+        /* font-family: ; */
+      }
+      .lg-sub-html {
+        /* font-family: ; */
+      } /*light gallery caption*/
+
+      #ozy-share-div > a > span,
+      .page-pagination a {
+        background-color: rgba(255, 255, 255, 1) !important;
+        color: #210c20 !important;
+      }
+      .page-pagination a.current {
+        background-color: #c09e6f !important;
+        color: #585558 !important;
+      }
+      .fancybox-inner {
+        color: #210c20 !important;
+      }
+      .header-line {
+        background-color: rgba(243, 237, 229, 1);
+      }
+      .a-page-title:hover {
+        border-color: #000000 !important;
+      }
+      .nav-box a,
+      .ozy-related-posts a,
+      #page-title-wrapper h1,
+      #page-title-wrapper h4,
+      #side-nav-bar a,
+      #side-nav-bar h3,
+      #content h1,
+      #sidebar .widget h1,
+      #content h2,
+      #sidebar .widget h2,
+      #content h3,
+      #sidebar .widget h3,
+      #content h4,
+      #sidebar .widget h4,
+      #content h5,
+      #sidebar .widget h5,
+      #content h6,
+      #sidebar .widget h6,
+      .heading-font,
+      #logo,
+      #tagline,
+      .fancybox-inner {
+        color: #000000;
+      }
+      #page-title-wrapper h1,
+      #content h1,
+      #footer-widget-bar h1,
+      #sidebar h1,
+      #footer h1,
+      #sidr h1 {
+        font-weight: 400;
+        font-size: 40px;
+        line-height: 1.3em;
+      }
+      #footer-widget-bar .widget-area h4,
+      #sidebar .widget > h4,
+      h4.heading-h4 {
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 1.5em;
+      }
+      #content h2,
+      #footer-widget-bar h2,
+      #sidebar h2,
+      #footer h2,
+      #sidr h2 {
+        font-weight: 400;
+        font-size: 36px;
+        line-height: 1.3em;
+      }
+      #content h3,
+      #footer-widget-bar h3,
+      #sidebar h3,
+      #footer h3,
+      #sidr h3 {
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 1.3em;
+      }
+      #content h4,
+      #page-title-wrapper h4,
+      #footer-widget-bar h4,
+      #sidebar h4,
+      #footer h4,
+      #sidr h4 {
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 1.5em;
+      }
+      #content h5,
+      #footer-widget-bar h5,
+      #sidebar h5,
+      #footer h5,
+      #sidr h5 {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+      #content h6,
+      #footer-widget-bar h6,
+      #sidebar h6,
+      #footer h6,
+      #sidr h6 {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 1.5em;
+      }
+      body.single h2.post-title,
+      .post-single h2.post-title {
+        font-weight: 400 !important;
+        font-size: 40px !important;
+        line-height: 1.1em !important;
+      }
+      #footer-widget-bar .widget a:hover,
+      #sidebar .widget a:hover {
+        color: #210c20;
+      }
+      span.plus-icon > span {
+        background-color: #210c20;
+      }
+      .content-color,
+      #single-blog-tags > a {
+        color: #210c20 !important;
+      } /* Forms */
+      input,
+      select,
+      textarea {
+        font-size: 16px;
+        line-height: 1.4em;
+        color: rgba(0, 0, 0, 1);
+      }
+      .lightbox-book-me-now {
+        color: rgba(255, 255, 255, 1) !important;
+      }
+      .wp-search-form i.oic-zoom {
+        color: rgba(0, 0, 0, 1);
+      }
+      input:not([type="submit"]):not([type="radio"]):not([type="checkbox"]):not(
+          [type="file"]
+        ),
+      select,
+      textarea {
+        background-color: rgba(243, 243, 243, 1);
+        border-color: rgba(243, 243, 243, 1) !important;
+      }
+      .generic-button,
+      input[type="button"],
+      input[type="submit"],
+      button[type="submit"],
+      .tagcloud > a {
+        color: rgb(255, 255, 255) !important;
+        background-color: rgba(0, 0, 0, 1);
+        border: 1px solid rgba(0, 0, 0, 1);
+      }
+      input[type="button"]:hover,
+      input[type="submit"]:hover,
+      button[type="submit"]:hover,
+      .tagcloud > a:hover {
+        background-color: rgb(221, 181, 127);
+        color: rgb(255, 255, 255) !important;
+        border: 1px solid rgba(221, 181, 127, 1);
+      } /* Blog Comments & Blog Stuff */
+      .post.regular-blog {
+        background-color: rgba(255, 255, 255, 1) !important;
+      }
+      #comments > h3 > span {
+        background-color: #c09e6f;
+      }
+      .comment-body > .comment-meta.commentmetadata > a,
+      .comment-body .reply > a,
+      #commentform .form-submit .submit {
+        color: #210c20 !important;
+      }
+      #commentform .form-submit .submit {
+        border-color: #210c20 !important;
+      }
+      #commentform .form-submit .submit:hover {
+        border-color: #c09e6f !important;
+      }
+      .post-meta p.g {
+        color: #585558;
+      }
+      .ozy-related-posts .caption,
+      .ozy-related-posts .caption > h4 > a {
+        color: rgba(255, 255, 255, 1) !important;
+        background-color: #210c20;
+      }
+      .super-header-share-buttons > a {
+        background-color: #585558;
+        color: #ffffff;
+      }
+      .super-header-share-buttons > a:hover,
+      .super-header-share-buttons > a:active {
+        background-color: #c09e6f;
+      } /*post formats*/
+      .simple-post-format > div > span,
+      .simple-post-format > div > h2,
+      .simple-post-format > div > p,
+      .simple-post-format > div > p > a,
+      .simple-post-format > div > blockquote,
+      .post-excerpt-audio > div > div {
+        color: rgb(255, 255, 255) !important;
+      }
+      div.sticky.post-single {
+        background-color: rgba(243, 237, 229, 1);
+        border-color: #c09e6f;
+      }
+      #content .post .post-meta {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        width: 65px;
+        padding: 8px 0 0 0;
+        background-color: #c09e6f;
+        text-align: center;
+        z-index: 1;
+      }
+      #content .post .post-meta span {
+        display: block;
+        font-weight: 400;
+        padding-bottom: 4px !important;
+      }
+      #content .post .post-meta span.d,
+      #content .post .post-meta span.c > span.n {
+        font-size: 24px !important;
+        line-height: 24px !important;
+        font-weight: 700;
+      }
+      #content .post .post-meta span.c > span.t {
+        font-size: 8px !important;
+        line-height: 10px !important;
+      }
+      #content .post .post-meta span.m,
+      #content .post .post-meta span.y,
+      #content .post .share-box > span {
+        font-size: 10px !important;
+        line-height: 12px !important;
+        color: #000000 !important;
+        text-transform: uppercase;
+      }
+      #content .post .post-meta span.d {
+        font-weight: 700 !important;
+        color: #000000 !important;
+      }
+      #content .post .post-meta span.c {
+        padding-top: 8px;
+        background-color: #000000;
+        color: #ffffff;
+      } /* Shortcodes */
+      .flickity-page-dots .dot {
+        background-color: #210c20;
+      }
+      .flickity-page-dots .dot.is-selected {
+        background-color: #c09e6f;
+      }
+      .ozy-button.auto,
+      .wpb_button.wpb_ozy_auto {
+        background-color: rgba(0, 0, 0, 1);
+        color: rgba(255, 255, 255, 1);
+      }
+      .ozy-button.auto:hover,
+      .wpb_button.wpb_ozy_auto:hover {
+        border-color: rgba(221, 181, 127, 1);
+        color: rgba(255, 255, 255, 1) !important;
+        background-color: rgba(221, 181, 127, 1);
+      }
+      .ozy-call-to-action-box > div.overlay-wrapper > a:hover {
+        background-color: #c09e6f !important;
+        border-color: #c09e6f !important;
+      }
+      .ozy-call-to-action-box > div.overlay-wrapper > a {
+        border-color: #ffffff !important;
+      }
+      .ozy-call-to-action-box > div.overlay-wrapper > a,
+      .ozy-call-to-action-box > div.overlay-wrapper > h2 {
+        color: #ffffff !important;
+      } /*.ozy-canvas-slider-wrapper nav.btns button:hover{ background-color:#c09e6f !important; color:#ffffff !important; }*/ /* Fancy Post Accordion */ /*.ozy-fancyaccordion-feed tr.title td:last-child h3,*/ /*.ozy-fancyaccordion-feed tr.excerpt td:last-child p>a {*/ /* color:*/ /* !important;*/ /*}*/ /*.ozy-fancyaccordion-feed tr.excerpt td:last-child p>a {*/ /* border-color:*/ /* !important;*/ /*}*/ /*.ozy-fancyaccordion-feed tr.title:hover td:last-child h3,*/ /*.ozy-fancyaccordion-feed tr.title.open td:last-child h3 {*/ /* color:*/ /* !important;*/ /*}*/ /*.ozy-fancyaccordion-feed tr.title td:first-child span {*/ /* background-color:*/ /* !important;*/ /* color:*/ /* !important;*/ /*}*/ /*.ozy-fancyaccordion-feed tr.title:hover td:first-child span,*/ /*.ozy-fancyaccordion-feed tr.title.open td:first-child span {*/ /* background-color:*/ /* !important;*/ /* color:*/ /* !important;*/ /*} */ /* Shared Border Color */
+      .ozy-fancyaccordion-feed td,
+      .post .pagination > a,
+      .ozy-border-color,
+      #ozy-share-div.ozy-share-div-blog,
+      .page-content table td,
+      #content table tr,
+      .post-content table td,
+      .ozy-toggle .ozy-toggle-title,
+      .ozy-toggle-inner,
+      .ozy-tabs .ozy-nav li a,
+      .ozy-accordion > h6.ui-accordion-header,
+      .ozy-accordion > div.ui-accordion-content,
+      .chat-row .chat-text,
+      #sidebar .widget > h4,
+      #sidebar .widget li,
+      .ozy-content-divider,
+      #post-author,
+      .single-post .post-submeta > .blog-like-link,
+      .widget ul ul,
+      blockquote,
+      .page-pagination > a,
+      .page-pagination > span,
+      #content select,
+      body.search article.result,
+      div.rssSummary,
+      #content table tr td,
+      #content table tr th,
+      .widget .testimonial-box,
+      .facts-bar,
+      .facts-bar > .heading,
+      .ozy-tabs-menu li,
+      .ozy-tab,
+      #ozy-tickerwrapper,
+      #ozy-tickerwrapper > strong,
+      #single-blog-tags > a,
+      .comment-body,
+      #comments-form h3#reply-title,
+      .ozy-news-box-ticker-wrapper .news-item,
+      .shared-border-color {
+        border-color: rgba(243, 237, 229, 1) !important;
+      }
+      #ozy-tickerwrapper div.pagination > a.active > span,
+      .header-line > span {
+        background-color: #c09e6f;
+      } /* Specific heading styling */
+      #page-title-wrapper {
+        height: 50px !important;
+        margin: 15px 0;
+      }
+      #main {
+        padding-top: 0 !important;
+      }
+      #main > .container {
+        padding-top: 0 !important;
+      }
+      body.full-page-template {
+        #main {
+          padding-top: 0 !important;
+        }
+      } 
+    
+      body:not(.single):not(.single-ozy_portfolio) #content.no-sidebar {
+        width: 100%;
+      } /*1140*/
+      #footer-widget-bar-sticky > .container.info-bar > section {
+        max-width: 1180px;
+      } /*1180*/
+      body.page-template-page-regular-blog .ozy-header-slider,
+      body.single #content.no-vc {
+        max-width: 1140px;
+      } /*1140*/
+    </style>
+    <style type="text/css" id="wp-custom-css">
+      img.svg.fadein {
+        position: absolute;
+        width: 45px;
+        height: 20px;
+        bottom: 40px;
+        right: 40px;
+      }
+
+      .salon-navigation-wrapper .salon-half-block .content-font {
+        visibility: hidden;
+      }
+
+
+      .sign-up .wpcf7 form.sent .wpcf7-response-output {
+        color: #ffffff;
+      }
+      #content.cat-blog .meta-info h1 {
+        padding: 0 30px 20px;
+      }
+      .single-blog article ul,
+      .single-blog article ol {
+        padding: 0 0 0 20px;
+      }
+      .cat-blog .aioseo-br {
+        position: relative;
+        top: 0;
+        padding: 20px 30px 0;
+      }
+      .cat-blog .aioseo-br a {
+        color: #444445 !important;
+      }
+      .cat-blog .aioseo-br .aioseo-breadcrumbs {
+        border-bottom: 1px solid #e5e5e6;
+        padding-bottom: 4px;
+      }
+    </style>
+    <style type="text/css" data-type="vc_shortcodes-custom-css">
+      .vc_custom_1690384532873 {
+        margin-bottom: 20px !important;
+      }
+      .vc_custom_1586267089713 {
+        margin-bottom: 20px !important;
+      }
+    </style>
+    
+      <style id="rocket-lazyload-nojs-css">
+        .rll-youtube-player,
+        [data-lazy-src] {
+          display: none !important;
+        }
+      </style>
+      </noscript
+    >
+   
+    <style id="wpr-lazyload-bg"></style>
+    <style id="wpr-lazyload-bg-exclusion"></style>
+ 
+    <link
+    rel="apple-touch-icon"
+    sizes="76x76"
+    href="../../images/logo.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="../../images/logo.png"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="../../images/logo.png"
+  />
+    <link rel="stylesheet" href="../../css/all.css" />
+    <link rel="stylesheet" href="../../css/media.css" />
+  
+  </head>
+  <body
+    class="page-template page-template-page-service page-template-page-service-php page page-id-16810 page-parent page-child parent-pageid-16489 ozy-page-model-full force-transparent-menu ozy-page-model-no-sidebar ozy-classic no-page-title wpb-js-composer js-comp-ver-7.1 vc_responsive"
+  >
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PQC3B7D"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+
+    <div class="fixed-header">
+      <div class="logo">
+        <a href="../StronaGlowna/index.html" id="logo">
+          <img
+            class="logo-standart"
+            src="../../images/logo.png"
+            data-src="/wp-content/themes/salon/images/logo.svg"
+            alt="logo"
+          />
+        </a>
+      </div>
+      <div class="fixed-header-content fixed-header-content--standart">
+        <div class="header-phone">
+          <div class="header-phone__row">
+            <div class="header-phone__col">
+              <span>Warszawa</span>
+              <a class="header-phone__link" href="tel:+48728296068"
+                >728 296 068</a
+              >
+            </div>
+          </div>
+          <a
+            class="header-place"
+            data-fancybox=""
+            data-src="#map-salons"
+            href="javascript:;"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#ffffff"
+              viewBox="0 0 50 50"
+            >
+              <path
+                d="M25 .0625C17.316406.0625 11.0625 6.316406 11.0625 14c0 6.367188 3.339844 13.667969 6.625 19.46875C20.972656 39.269531 24.25 43.5625 24.25 43.5625c.175781.238281.453125.382813.75.382813s.574219-.144532.75-.382813c0 0 3.28125-4.351562 6.5625-10.1875 3.28125-5.835937 6.625-13.140625 6.625-19.375C38.9375 6.316406 32.683594.0625 25 .0625zm0 1.875c6.679688 0 12.0625 5.382813 12.0625 12.0625 0 5.554688-3.15625 12.75-6.375 18.46875-2.628906 4.675781-4.816406 7.742188-5.6875 8.9375-.875-1.179687-3.0625-4.207031-5.6875-8.84375-3.214844-5.679687-6.375-12.859375-6.375-18.5625 0-6.679687 5.382813-12.0625 12.0625-12.0625zm0 6.09375c-3.835937 0-6.96875 3.132813-6.96875 6.96875 0 3.835938 3.132813 6.96875 6.96875 6.96875 3.835938 0 6.96875-3.132812 6.96875-6.96875 0-3.835937-3.132812-6.96875-6.96875-6.96875zm0 1.9375c2.792969 0 5.03125 2.238281 5.03125 5.03125S27.792969 20.03125 25 20.03125 19.96875 17.792969 19.96875 15 22.207031 9.96875 25 9.96875zm-9.84375 24.1875c-4 .585938-7.382812 1.511719-9.875 2.71875-1.246094.601563-2.277344 1.273438-3.03125 2.0625C1.496094 39.726563 1 40.707031 1 41.75c0 1.429688.914063 2.652344 2.21875 3.625 1.304688.972656 3.066406 1.757813 5.21875 2.4375C12.738281 49.171875 18.5625 50 25 50s12.261719-.828125 16.5625-2.1875c2.152344-.679687 3.914063-1.464844 5.21875-2.4375C48.085938 44.402344 49 43.179688 49 41.75c0-1.039062-.496094-2.023437-1.25-2.8125-.753906-.789062-1.785156-1.460937-3.03125-2.0625-2.492187-1.207031-5.875-2.132812-9.875-2.71875-.550781-.085937-1.070312.292969-1.15625.84375-.085937.550781.292969 1.070313.84375 1.15625 3.859375.566406 7.109375 1.464844 9.3125 2.53125 1.101563.535156 1.953125 1.117188 2.46875 1.65625.515625.539063.6875.988281.6875 1.40625 0 .574219-.382812 1.234375-1.40625 2-1.023437.765625-2.613281 1.519531-4.625 2.15625C36.945313 47.175781 31.265625 48 25 48s-11.945312-.824219-15.96875-2.09375c-2.011719-.636719-3.601562-1.390625-4.625-2.15625C3.382813 42.984375 3 42.324219 3 41.75c0-.417969.171875-.867187.6875-1.40625.515625-.539062 1.367188-1.121094 2.46875-1.65625 2.203125-1.066406 5.453125-1.964844 9.3125-2.53125.550781-.085937.929688-.605469.84375-1.15625-.085937-.550781-.605469-.929687-1.15625-.84375z"
+              />
+            </svg>
+          </a>
+          <div id="map-salons" class="map-salons" style="display: none">
+            <div id="acf-map-marker" class="acf-map vl-row map-fancy-multiple">
+              <!-- <div class="marker" data-lat="52.2234449" data-lng="20.9440451">
+                <a
+                  class="link-salon"
+                  href="https://fastlinestudio.pl/salons/warszawa/"
+                  rel="bookmark"
+                >
+                  Salon piękności Warszawa</a
+                >
+                <p class="address">Jana Kazimierza 27a, Варшава, Польша</p>
+              </div> -->
+              <!-- <div class="marker" data-lat="50.0496245" data-lng="19.9591837">
+                <a
+                  class="link-salon"
+                  href="https://fastlinestudio.pl/salons/zablocie/"
+                  rel="bookmark"
+                >
+                  Salon piękności Krakow Zabłocie</a
+                >
+                <p class="address">Zabłocie 19A, Краков, Польша</p>
+              </div> -->
+              <!-- <div
+                class="marker"
+                data-lat="50.080872189827"
+                data-lng="20.003794203705"
+              >
+                <a
+                  class="link-salon"
+                  href="https://fastlinestudio.pl/salons/krakow/"
+                  rel="bookmark"
+                >
+                  Salon piękności Krakow OS Avia</a
+                >
+                <p class="address">Osiedle Avia 1, 31-871 Kraków, Польша</p>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="lang-dropdown js-lang-dropdown">
+        <div class="social-icons">
+          <a href="https://instagram.com/svbeauty_warszawa?igshid=OGQ5ZDc2ODk2ZA%3D%3D&amp;utm_source=qr" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="instagram icon" src="../../icons/instagram.png"><noscript><img
+                width="25"
+                height="25"
+                alt="instagram icon"
+                src="/wp-content/themes/salon/images/Group%2049.svg"
+            /></noscript>
+          </a>
+          <a href="https://www.facebook.com/SVBeautyWaw?mibextid=ZbWKwL" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="facebook icon" src="../../icons/facebook.png"><noscript><img
+                width="25"
+                height="25"
+                alt="facebook icon"
+                src="../../icons/facebook.png"
+            /></noscript>
+          </a>
+          <a href="https://svbeautystudio.booksy.com" target="_blank" rel="nofollow noopener" class="social-icons__item">
+            <img width="25" height="25" alt="facebook icon" src="../../icons/booksy-icon-filled-256.webp"><noscript><img
+                width="25"
+                height="25"
+                alt="facebook icon"
+                src="../../iconsbooksy-icon-filled-256.webp"
+            /></noscript>
+          </a>
+        </div>
+        <div class="lang-dropdown__control">
+          <span class="lang-dropdown__text"> pl </span>
+        </div>
+        <ul class="lang-dropdown__list" style="display: none">
+          <li
+            class="lang-item lang-item-1309 lang-item-pl current-lang lang-item-first"
+          >
+            <a href="#">PL</a>
+            <!-- <a href="https://fastlinestudio.pl/">PL</a> -->
+          </li>
+          <li class="lang-item lang-item-61 lang-item-ru">
+            <a href="#">RU</a>
+            <!-- <a href="https://fastlinestudio.pl/ru/">RU</a> -->
+          </li>
+          <li class="lang-item lang-item-35 lang-item-uk">
+            <a href="#">EN</a>
+            <!-- <a href="https://fastlinestudio.pl/uk/">UA</a> -->
+          </li>
+        </ul>
+      </div>
+      
+
+      <div class="booking-button-header">
+        <a
+          class="btn-booking btn-booking--border"
+          href="https://svbeautystudio.booksy.com"
+        >
+          Rezerwuj online <span>-10%</span>
+        </a>
+      </div>
+      <a href="#salon-nav" class="salon-nav-trigger"
+        >Menu <span class="salon-nav-icon"></span>
+        <svg x="0px" y="0px" width="54px" height="54px" viewBox="0 0 54 54">
+          <circle
+            fill="transparent"
+            stroke="#656e79"
+            stroke-width="1"
+            cx="27"
+            cy="27"
+            r="25"
+            stroke-dasharray="157 157"
+            stroke-dashoffset="157"
+          ></circle>
+        </svg>
+      </a>
+      <div id="salon-nav" class="salon-nav">
+        <div class="salon-navigation-wrapper">
+          <div class="salon-half-block salon-navigation">
+            <nav>
+              <ul id="menu-primary-menu" class="salon-primary-nav">
+                <li
+                  id="menu-item-16547"
+                  class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-16485 current_page_item active menu-item-16547"
+                  data-text="Strona główna"
+                >
+                  <a href="../StronaGlowna/index.html">Strona główna</a>
+                </li>
+                
+                              <li
+                              id="menu-item-16796"
+                              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16796"
+                              data-text="Manicure dla kobiet"
+                            >
+                              <a href="../ManicureDlaKobiet/manicure.html"
+                                >Manicure</a
+                              >
+                            </li>
+                            <li
+                            id="menu-item-16816"
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16816"
+                            data-text="Pedicure"
+                          >
+                            <a href="../StrzyzenieDamskie/strzyzenie-damskie.html"
+                              >Strzyżenie i koloryzacja damska</a
+                            >
+                          </li>
+                            <li
+                            id="menu-item-16816"
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16816"
+                            data-text="Pedicure"
+                          >
+                            <a href="../PedicureDamski/pedicure.html"
+                              >Pedicure</a
+                            >
+                          </li>
+                          <li
+                          id="menu-item-16884"
+                          class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16884"
+                          data-text="Koloryzacja i regulacja brwi"
+                        >
+                          <a
+                            href="../koloryzacja-brwi/koloryzacja-brwi.html"
+                            >Brwi i rzęsy</a
+                          >
+                        </li>
+                
+              <li
+                      id="menu-item-16896"
+                      class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16896"
+                      data-text="Barber"
+                    >
+                      <a
+                        href="../Barber/Barber.html"
+                        >Barber</a
+                      >
+                    </li>
+                   
+                    <li
+                id="menu-item-22767"
+                class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-22767"
+                data-text="Blog o urodzie"
+              >
+                <a href="../Depilacja/Depilacja.html">Depilacja</a>
+              </li>
+              <li
+              id="menu-item-20418"
+              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20418"
+              data-text="O nas"
+            >
+              <a href="../OpinieNaszychklientow/reviewsfls.html"
+                >O nas</a
+              >
+            </li>
+                <li
+                  id="menu-item-18068"
+                  class="menu-item menu-item-type-post_type_archive menu-item-object-salon menu-item-18068"
+                  data-text="Kontakt"
+                >
+                  <a href="../Kontakt/salons.html">Kontakt</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="none">
+      <p><a href="#content">Skip to Content</a></p>
+    </div>
+    <div id="main" class="">
+      <div class="container no-sidebar">
+        <div id="content" class="no-sidebar">
+          <div
+            id="post-16810"
+            class="page post-16810 type-page status-publish hentry"
+          >
+            <article>
+              <div class="post-content page-content">
+                <div class="row-container">
+                  <div
+                    class="header-screen"
+                    style="
+                      background: url(../../images/homeServiseList/pedicure.png)
+                          no-repeat,
+                        #909095;
+                      background-size: 65%;
+                      background-position: -8px -92px;
+                    "
+                  >
+                    <div class="wrapper">
+                      <div class="right-half">
+                        <div class="dscr">
+                          <h1>PEDICURE DAMSKI</h1>
+                          <div class="short">
+                            Pedicure SV Beauty Studio to: szybkość +
+                            bezpieczeństwo
+                          </div>
+                          <div class="triangle"></div>
+                          <a
+                            href="https://svbeautystudio.booksy.com"
+                            class="vc_btn3-color-white"
+                          >
+                            Umów wizytę
+                          </a>
+                        </div>
+                      </div>
+                      <div class="clear"></div>
+                    </div>
+                  </div>
+                  <div class="gallery">
+                    <h2>Nasze prace</h2>
+                    <ul class="gmasonry">
+                      <li class="gallery-item">
+                        <a
+                          href="../../images/pedicure-damskie/2.jpeg"
+                          data-fancybox="gallery"
+                        >
+                          <div
+                            data-bg="../../images/pedicure-damskie/2.jpeg"
+                            class="wrpim rocket-lazyload"
+                            style=""
+                          ></div>
+                        </a>
+                      </li>
+                      <li class="gallery-item">
+                        <a
+                          href="../../images/pedicure-damskie/3.jpeg"
+                          data-fancybox="gallery"
+                        >
+                          <div
+                            data-bg="../../images/pedicure-damskie/3.jpeg"
+                            class="wrpim rocket-lazyload"
+                            style=""
+                          ></div>
+                        </a>
+                      </li>
+                      <li class="gallery-item">
+                        <a
+                          href="../../images/pedicure-damskie/4.jpeg"
+                          data-fancybox="gallery"
+                        >
+                          <div
+                            data-bg="../../images/pedicure-damskie/4.jpeg"
+                            class="wrpim rocket-lazyload"
+                            style=""
+                          ></div>
+                        </a>
+                      </li>
+                      <li class="gallery-item">
+                        <a
+                          href="../../images/pedicure-damskie/5.jpeg"
+                          data-fancybox="gallery"
+                        >
+                          <div
+                            data-bg="../../images/pedicure-damskie/5.jpeg"
+                            class="wrpim rocket-lazyload"
+                            style=""
+                          ></div>
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="clear"></div>
+                  </div>
+                </div>
+
+                <div class="row-container">
+                  <div class="order-form">
+                    <h2 class="order-form__heading">
+                      Rezerwuj online. Rabat -10%
+                    </h2>
+                    <a
+                      class="btn-booking btn-booking--border"
+                      href="https://svbeautystudio.booksy.com"
+                    >
+                      Rezerwuj online <span>-10%</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="map-container">
+                  <iframe
+                    width="100%"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2443.087844720026!2d20.979835777031116!3d52.2417880567898!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecdaad2914f4b%3A0x9afdddda3aab8d8!2sManicure%20Pedicure%20Fryzjerstwo%20SV%20Helena!5e0!3m2!1sru!2slt!4v1703211227980!5m2!1sru!2slt"
+                    width="600"
+                    height="450"
+                    style="border: 0"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+
+                <div class="row-container">
+                  <div class="order-form">
+                    <h2 class="order-form__heading">
+                      Rezerwuj online. Rabat -10%
+                    </h2>
+                    <a
+                      class="btn-booking btn-booking--border"
+                      href="https://svbeautystudio.booksy.com"
+                    >
+                      Rezerwuj online <span>-10%</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="row-container">
+                  <div class="buttons">
+                    <div class="h2">Podobne usługi</div>
+                    <div class="container">
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >PEDICURE HYBRYDOWY</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >PEDICURE FREZARKOWY</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >PEDICURE MESKI</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >IBX</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >MANICURE DLA KOBIET</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >MANICURE HYBRYDOWY</a
+                      >
+                      <a
+                        class="button"
+                        href="https://svbeautystudio.booksy.com"
+                        target="_self"
+                        >MANICURE FREZARKOWY</a
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="list-services row-container">
+                  <div class="h2">Usługi SV Beauty Studio</div>
+                  <div class="list-items">
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                        <div
+                          style="
+                            width: 288px;
+                            height: 162px;
+                            background: url(../../images/manicure-damskie/woman-with-nail-art-promoting-design-luxury-earrings-ring_114579-3704.jpg);
+                            background-size: cover;
+                            background-position-y: 75%;
+                          "
+                        ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Manicure </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                        <div
+                          style="
+                            width: 288px;
+                            height: 162px;
+                            background: url(../../images/woman-getting-her-hair-washed-beauty-salon_23-2149167381.jpg);
+                            background-size: cover;
+                          "
+                        ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Farbowanie </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                          style="
+                            width: 288px;
+                            height: 162px;
+                            background: url(../../images/strzyzenie-damskie/woman-getting-her-hair-cut-beauty-salon_23-2149167399.jpg);
+                            background-size: cover;
+                          "
+                        ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Strzyzenie damskie </span>
+                      </a>
+                    </div>
+
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                      style="
+                        width: 288px;
+                        height: 162px;
+                        background: url(../../images/pedicure-damskie/skincare-beauty-female-feet-with-camomile-s-flower_186202-728\ \(1\).jpg);
+                        background-size: cover;
+                      "
+                    ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Pedicure </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                      style="
+                        width: 288px;
+                        height: 162px;
+                        background: url(../../images/strzyzenie-damskie/woman-wearing-purple-ribbon-medium-shot_23-2149872362.jpg);
+                        background-size: cover;
+                      "
+                    ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Stylizacja </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                      style="
+                        width: 288px;
+                        height: 162px;
+                        background: url(../../images/strzyzenie-damskie/hairdresser-combing-woman-while-she-talks-phone_1163-732.jpg);
+                        background-size: cover;
+                      "
+                    ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Pielęgnacja włosów </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                      style="
+                        width: 288px;
+                        height: 162px;
+                        background: url(../../images/strzyzenie-meskie/1111.jpeg);
+                        background-size: cover;
+                      "
+                    ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Strzyżenie męskie </span>
+                      </a>
+                    </div>
+                    <div class="item">
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-image"
+                      >
+                      <div
+                      style="
+                        width: 288px;
+                        height: 162px;
+                        background: url(../../images/woman-nail-salon-receiving-manicure-with-nail-file_1139-1692.jpg);
+                        background-size: cover;
+                      "
+                    ></div>
+                      </a>
+                      <a
+                        href="https://svbeautystudio.booksy.com"
+                        class="link-title"
+                      >
+                        <span> Manicure męski </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <div id="modal-form" class="modal-form" style="display: none">
+              <div class="modal-form__heading">Umówić wizytę</div>
+              <div
+                class="wpcf7 no-js"
+                id="wpcf7-f3565-p16810-o1"
+                lang="ru-RU"
+                dir="ltr"
+              >
+                <div class="screen-reader-response">
+                  <p role="status" aria-live="polite" aria-atomic="true"></p>
+                  <ul></ul>
+                </div>
+                <form
+                  action="/cennik/pedicure/#wpcf7-f3565-p16810-o1"
+                  method="post"
+                  class="wpcf7-form init"
+                  aria-label="Контактная форма"
+                  novalidate="novalidate"
+                  data-status="init"
+                >
+                  <div style="display: none">
+                    <input type="hidden" name="_wpcf7" value="3565" />
+                    <input type="hidden" name="_wpcf7_version" value="5.7.3" />
+                    <input type="hidden" name="_wpcf7_locale" value="ru_RU" />
+                    <input
+                      type="hidden"
+                      name="_wpcf7_unit_tag"
+                      value="wpcf7-f3565-p16810-o1"
+                    />
+                    <input
+                      type="hidden"
+                      name="_wpcf7_container_post"
+                      value="16810"
+                    />
+                    <input
+                      type="hidden"
+                      name="_wpcf7_posted_data_hash"
+                      value=""
+                    />
+                  </div>
+                  <p>
+                    <span class="wpcf7-form-control-wrap" data-name="text-538"
+                      ><input
+                        size="40"
+                        class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                        aria-required="true"
+                        aria-invalid="false"
+                        placeholder="Imię"
+                        value=""
+                        type="text"
+                        name="text-538" /></span
+                    ><br />
+                    <span class="wpcf7-form-control-wrap" data-name="tel-58"
+                      ><input
+                        size="40"
+                        class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-required wpcf7-validates-as-tel"
+                        aria-required="true"
+                        aria-invalid="false"
+                        placeholder="Telefon"
+                        value=""
+                        type="tel"
+                        name="tel-58" /></span
+                    ><br />
+                    <span
+                      class="wpcf7-form-control-wrap"
+                      data-name="textarea-540"
+                    >
+                      <textarea
+                        cols="10"
+                        rows="2"
+                        class="wpcf7-form-control wpcf7-textarea"
+                        aria-invalid="false"
+                        placeholder="Zabieg"
+                        name="textarea-540"
+                      ></textarea></span
+                    ><br />
+                    <span class="wpcf7-form-control-wrap" data-name="office"
+                      ><select
+                        class="wpcf7-form-control wpcf7-select custom-select-standart"
+                        aria-invalid="false"
+                        name="office"
+                      >
+                        <option value=""></option>
+                        <option value="Kraków, ul. Zabłocie 19A">
+                          Kraków, ul. Zabłocie 19A
+                        </option>
+                        <option
+                          value="Kraków, Osiedle Avia, local 4, budynek 1"
+                        >
+                          Kraków, Osiedle Avia, local 4, budynek 1
+                        </option>
+                      </select></span
+                    ><br />
+                    <input
+                      class="wpcf7-form-control has-spinner wpcf7-submit"
+                      type="submit"
+                      value="Wyślij"
+                    />
+                  </p>
+                  <div class="wpcf7-response-output" aria-hidden="true"></div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="list-salon vl-row" style="padding: 30px;">
+        <div class="meta-info vl-row">
+          <div class="info-salon">
+            <div class="thumb">
+              <a href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu">
+                <img width="100%"  src="../../images/salon-door.png" alt="SV Beauty Studio os Avia Krakow">
+              </a>
+            </div>
+            <div class="descrip">
+              <div class="info-item the-title">
+                <a href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu">Warszawa, Józefa Bellottiego</a>
+                
+              </div>
+              <div class="info-item address">
+                <i data-fip-value="fas fa-map-marker-alt" class="fas fa-map-marker-alt"></i>Józefa Bellottiego 1/lokal 13, 01-022 Warszawa
+                <a href="https://www.google.com/maps/place/Manicure+Pedicure+Fryzjerstwo+SV+Helena/@52.2417848,20.980222,17z/data=!4m15!1m8!3m7!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!2sManicure+Pedicure+Fryzjerstwo+SV+Helena!8m2!3d52.2417848!4d20.9824107!10e4!16s%2Fg%2F11n_j59kqb!3m5!1s0x471ecdaad2914f4b:0x9afdddda3aab8d8!8m2!3d52.2417848!4d20.9824107!16s%2Fg%2F11n_j59kqb?entry=ttu" target="_blank" class="address-g-maps"><img width="100%"  src="../../icons/Google_Maps-Logo.wine-300.svg" data-ll-status="loaded" class="entered lazyloaded"></a>
+              </div>
+              <div class="info-item">
+                <i data-fip-value="fas fa-mobile-alt" class="fas fa-mobile-alt"></i><a href="tel:+48574070284">+48 728 296 068</a>
+              </div>
+              <div class="form-sign">
+                <div class="contacts__item">
+                  <a class="contacts__btn btn-booking" href="https://svbeautystudio.booksy.com">
+                    umów wizytę <span>-10%</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="footer-widget-bar-sticky" class="widget">
+      <div class="container info-bar">
+        <section class="widget-area">
+          <a href="#close-footer-info-bar" id="close-footer-info-bar">X</a>
+          <div class="widget_text widget">
+            <div class="textwidget custom-html-widget">
+              <span class="heading-font">Linki</span>
+              <div class="social-icons">
+                <a
+                  href="https://instagram.com/svbeauty_warszawa?igshid=OGQ5ZDc2ODk2ZA%3D%3D&utm_source=qr"
+                  target="_blank"
+                  rel="nofollow noopener"
+                  class="social-icons__item"
+                >
+                  <img
+                    width="25"
+                    height="25"
+                    alt="instagram icon"
+                    src="../../icons/instagram.png"
+                  /><noscript
+                    ><img
+                      width="25"
+                      height="25"
+                      alt="instagram icon"
+                      src="/wp-content/themes/salon/images/Group%2049.svg"
+                  /></noscript>
+                </a>
+                <a
+                  href="https://www.facebook.com/SVBeautyWaw?mibextid=ZbWKwL"
+                  target="_blank"
+                  rel="nofollow noopener"
+                  class="social-icons__item"
+                >
+                  <img
+                    width="25"
+                    height="25"
+                    alt="facebook icon"
+                    src="../../icons/facebook.png"
+                  /><noscript
+                    ><img
+                      width="25"
+                      height="25"
+                      alt="facebook icon"
+                      src="../../icons/facebook.png"
+                  /></noscript>
+                </a>
+                <a
+                  href="https://svbeautystudio.booksy.com"
+                  target="_blank"
+                  rel="nofollow noopener"
+                  class="social-icons__item"
+                >
+                  <img
+                    width="25"
+                    height="25"
+                    alt="facebook icon"
+                    src="../../icons/booksy-icon-filled-256.webp"
+                  /><noscript
+                    ><img
+                      width="25"
+                      height="25"
+                      alt="facebook icon"
+                      src="../../iconsbooksy-icon-filled-256.webp"
+                  /></noscript>
+                </a>
+              </div>
+              <div style="margin-top: 20px">
+                <a
+                  class="btn-booking shortcode-btn btn-booking--border"
+                  href="https://svbeautystudio.booksy.com"
+                >
+                  Rezerwuj online <span>-10%</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="textwidget">
+              <p>
+                <span style="font-weight: 400"
+                  >pn – sb: 09:00 – 21:00<br />
+                  <span style="font-weight: 400">Telefon</span>:
+                  <a href="tel:+48728296068">+48 728 296 068</a></span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="textwidget">
+              <div>
+                <p>
+                  <br />
+                  <a href="https://maps.app.goo.gl/KiTfE3HcqXumKPJ67">
+                    Józefa Bellottiego 1lokal 13, 01-022 Warszawa
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="salon-btt-container js-top-btn-container">
+      <div tooltip="BACK TO TOP" class="top salon-btt js-top">
+        <img
+          width="512"
+          height="512"
+          src="images/up-arrow.svg"
+          class="svg"
+          alt=""
+        />
+      </div>
+    </div>
+    <a href="tel:+48574070284" class="callback-button">
+      <svg
+        id="Слой_1"
+        data-name="Слой 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 18 18"
+      >
+        <path
+          id="Shape"
+          d="M3.6,7.8a15.56816,15.56816,0,0,0,6.6,6.6l2.2-2.2a.79617.79617,0,0,1,1-.2,10.46016,10.46016,0,0,0,3.6.6.94477.94477,0,0,1,1,1V17a.94477.94477,0,0,1-1,1A16.98573,16.98573,0,0,1,0,1,.94477.94477,0,0,1,1,0H4.5a.94477.94477,0,0,1,1,1,11.32506,11.32506,0,0,0,.6,3.6,1.23159,1.23159,0,0,1-.2,1L3.6,7.8Z"
+          fill-rule="evenodd"
+        ></path>
+      </svg>
+    </a>
+    <div class="preloader" style="display: none">
+      <svg
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.0"
+        width="64px"
+        height="64px"
+        viewBox="0 0 128 128"
+        xml:space="preserve"
+      >
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"></rect>
+        <g>
+          <circle cx="16" cy="64" r="16" fill="#000000"></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#555555"
+            transform="rotate(45,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#949494"
+            transform="rotate(90,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#cccccc"
+            transform="rotate(135,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#e1e1e1"
+            transform="rotate(180,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#e1e1e1"
+            transform="rotate(225,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#e1e1e1"
+            transform="rotate(270,64,64)"
+          ></circle>
+          <circle
+            cx="16"
+            cy="64"
+            r="16"
+            fill="#e1e1e1"
+            transform="rotate(315,64,64)"
+          ></circle>
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            values="0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64"
+            calcMode="discrete"
+            dur="720ms"
+            repeatCount="indefinite"
+          ></animateTransform>
+        </g>
+      </svg>
+      <br />
+      loading...
+    </div>
+    <style type="text/css">
+      input:not([type="submit"]):not([type="radio"]):not([type="checkbox"]):not(
+          [type="file"]
+        ),
+      select,
+      textarea {
+        background-color: #fff !important;
+      }
+      #footer,
+      #footer-widget-bar,
+      #footer-widget-bar-sticky,
+      .top,
+      .salon-btt:before {
+        font-family: "Montserrat" !important;
+      }
+    </style>
+    <script type="rocketlazyloadscript" data-rocket-type="text/javascript">
+      window.addEventListener('DOMContentLoaded', function() {
+      /*jQuery(document).ready(function () {
+          jQuery('.js-inputmask').inputmask({"placeholder": "_", "mask": "+38(999) 999-99-99"});
+      });*/
+      });
+    </script>
+    <script type="text/html" id="wpb-modifications">
+      window.wpbCustomElement = 1;
+    </script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/plugins/contact-form-7/includes/swv/js/index.js?ver=1702826811"
+      id="swv-js"
+      defer=""
+    ></script>
+    <script type="text/javascript" id="contact-form-7-js-extra">
+      /* <![CDATA[ */
+      var wpcf7 = {
+        api: {
+          root: "https:\/\/fastlinestudio.pl\/wp-json\/",
+          namespace: "contact-form-7\/v1",
+        },
+        cached: "1",
+      };
+      /* ]]> */
+    </script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/plugins/contact-form-7/includes/js/index.js?ver=1702826811"
+      id="contact-form-7-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-rocket-type="text/javascript"
+      id="rocket-browser-checker-js-after"
+    >
+      "use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}var RocketBrowserCompatibilityChecker=function(){function RocketBrowserCompatibilityChecker(options){_classCallCheck(this,RocketBrowserCompatibilityChecker),this.passiveSupported=!1,this._checkPassiveOption(this),this.options=!!this.passiveSupported&&options}return _createClass(RocketBrowserCompatibilityChecker,[{key:"_checkPassiveOption",value:function(self){try{var options={get passive(){return!(self.passiveSupported=!0)}};window.addEventListener("test",null,options),window.removeEventListener("test",null,options)}catch(err){self.passiveSupported=!1}}},{key:"initRequestIdleCallback",value:function(){!1 in window&&(window.requestIdleCallback=function(cb){var start=Date.now();return setTimeout(function(){cb({didTimeout:!1,timeRemaining:function(){return Math.max(0,50-(Date.now()-start))}})},1)}),!1 in window&&(window.cancelIdleCallback=function(id){return clearTimeout(id)})}},{key:"isDataSaverModeOn",value:function(){return"connection"in navigator&&!0===navigator.connection.saveData}},{key:"supportsLinkPrefetch",value:function(){var elem=document.createElement("link");return elem.relList&&elem.relList.supports&&elem.relList.supports("prefetch")&&window.IntersectionObserver&&"isIntersecting"in IntersectionObserverEntry.prototype}},{key:"isSlowConnection",value:function(){return"connection"in navigator&&"effectiveType"in navigator.connection&&("2g"===navigator.connection.effectiveType||"slow-2g"===navigator.connection.effectiveType)}}]),RocketBrowserCompatibilityChecker}();
+    </script>
+    <script type="text/javascript" id="rocket-preload-links-js-extra">
+      /* <![CDATA[ */
+      var RocketPreloadLinksConfig = {
+        excludeUris:
+          "\/reviewsfls|\/(?:.+\/)?feed(?:\/(?:.+\/?)?)?$|\/(?:.+\/)?embed\/|\/(index.php\/)?(.*)wp-json(\/.*|$)|\/refer\/|\/go\/|\/recommend\/|\/recommends\/",
+        usesTrailingSlash: "1",
+        imageExt:
+          "jpg|jpeg|gif|png|tiff|bmp|webp|avif|pdf|doc|docx|xls|xlsx|php",
+        fileExt:
+          "jpg|jpeg|gif|png|tiff|bmp|webp|avif|pdf|doc|docx|xls|xlsx|php|html|htm",
+        siteUrl: "https:\/\/fastlinestudio.pl",
+        onHoverDelay: "100",
+        rateThrottle: "3",
+      };
+      /* ]]> */
+    </script>
+    <script
+      type="rocketlazyloadscript"
+      data-rocket-type="text/javascript"
+      id="rocket-preload-links-js-after"
+    >
+      (function() {
+      "use strict";var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},e=function(){function i(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(e,t,n){return t&&i(e.prototype,t),n&&i(e,n),e}}();function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function n(e,t){i(this,n),this.browser=e,this.config=t,this.options=this.browser.options,this.prefetched=new Set,this.eventTime=null,this.threshold=1111,this.numOnHover=0}return e(n,[{key:"init",value:function(){!this.browser.supportsLinkPrefetch()||this.browser.isDataSaverModeOn()||this.browser.isSlowConnection()||(this.regex={excludeUris:RegExp(this.config.excludeUris,"i"),images:RegExp(".("+this.config.imageExt+")$","i"),fileExt:RegExp(".("+this.config.fileExt+")$","i")},this._initListeners(this))}},{key:"_initListeners",value:function(e){-1<this.config.onHoverDelay&&document.addEventListener("mouseover",e.listener.bind(e),e.listenerOptions),document.addEventListener("mousedown",e.listener.bind(e),e.listenerOptions),document.addEventListener("touchstart",e.listener.bind(e),e.listenerOptions)}},{key:"listener",value:function(e){var t=e.target.closest("a"),n=this._prepareUrl(t);if(null!==n)switch(e.type){case"mousedown":case"touchstart":this._addPrefetchLink(n);break;case"mouseover":this._earlyPrefetch(t,n,"mouseout")}}},{key:"_earlyPrefetch",value:function(t,e,n){var i=this,r=setTimeout(function(){if(r=null,0===i.numOnHover)setTimeout(function(){return i.numOnHover=0},1e3);else if(i.numOnHover>i.config.rateThrottle)return;i.numOnHover++,i._addPrefetchLink(e)},this.config.onHoverDelay);t.addEventListener(n,function e(){t.removeEventListener(n,e,{passive:!0}),null!==r&&(clearTimeout(r),r=null)},{passive:!0})}},{key:"_addPrefetchLink",value:function(i){return this.prefetched.add(i.href),new Promise(function(e,t){var n=document.createElement("link");n.rel="prefetch",n.href=i.href,n.onload=e,n.onerror=t,document.head.appendChild(n)}).catch(function(){})}},{key:"_prepareUrl",value:function(e){if(null===e||"object"!==(void 0===e?"undefined":r(e))||!1 in e||-1===["http:","https:"].indexOf(e.protocol))return null;var t=e.href.substring(0,this.config.siteUrl.length),n=this._getPathname(e.href,t),i={original:e.href,protocol:e.protocol,origin:t,pathname:n,href:t+n};return this._isLinkOk(i)?i:null}},{key:"_getPathname",value:function(e,t){var n=t?e.substring(this.config.siteUrl.length):e;return n.startsWith("/")||(n="/"+n),this._shouldAddTrailingSlash(n)?n+"/":n}},{key:"_shouldAddTrailingSlash",value:function(e){return this.config.usesTrailingSlash&&!e.endsWith("/")&&!this.regex.fileExt.test(e)}},{key:"_isLinkOk",value:function(e){return null!==e&&"object"===(void 0===e?"undefined":r(e))&&(!this.prefetched.has(e.href)&&e.origin===this.config.siteUrl&&-1===e.href.indexOf("?")&&-1===e.href.indexOf("#")&&!this.regex.excludeUris.test(e.href)&&!this.regex.images.test(e.href))}}],[{key:"run",value:function(){"undefined"!=typeof RocketPreloadLinksConfig&&new n(new RocketBrowserCompatibilityChecker({capture:!0,passive:!0}),RocketPreloadLinksConfig).init()}}]),n}();t.run();
+      }());
+    </script>
+    <script type="text/javascript" id="rocket_lazyload_css-js-extra">
+      /* <![CDATA[ */
+      var rocket_lazyload_css_data = { threshold: "300" };
+      /* ]]> */
+    </script>
+    <script type="text/javascript" id="rocket_lazyload_css-js-after">
+      !(function o(n, c, a) {
+        function s(t, e) {
+          if (!c[t]) {
+            if (!n[t]) {
+              var r = "function" == typeof require && require;
+              if (!e && r) return r(t, !0);
+              if (u) return u(t, !0);
+              throw (
+                (((r = new Error("Cannot find module '" + t + "'")).code =
+                  "MODULE_NOT_FOUND"),
+                r)
+              );
+            }
+            (r = c[t] = { exports: {} }),
+              n[t][0].call(
+                r.exports,
+                function (e) {
+                  return s(n[t][1][e] || e);
+                },
+                r,
+                r.exports,
+                o,
+                n,
+                c,
+                a
+              );
+          }
+          return c[t].exports;
+        }
+        for (
+          var u = "function" == typeof require && require, e = 0;
+          e < a.length;
+          e++
+        )
+          s(a[e]);
+        return s;
+      })(
+        {
+          1: [
+            function (e, t, r) {
+              "use strict";
+              !(function () {
+                const r =
+                    "undefined" == typeof rocket_pairs ? [] : rocket_pairs,
+                  e =
+                    "undefined" == typeof rocket_excluded_pairs
+                      ? []
+                      : rocket_excluded_pairs;
+                e.map((t) => {
+                  var e = t.selector;
+                  const r = document.querySelectorAll(e);
+                  r.forEach((e) => {
+                    e.setAttribute(
+                      "data-rocket-lazy-bg-".concat(t.hash),
+                      "excluded"
+                    );
+                  });
+                });
+                const o = document.querySelector("#wpr-lazyload-bg");
+                var t = rocket_lazyload_css_data.threshold || 300;
+                const n = new IntersectionObserver(
+                  (e) => {
+                    e.forEach((t) => {
+                      if (t.isIntersecting) {
+                        const e = r.filter((e) => t.target.matches(e.selector));
+                        e.map((t) => {
+                          t &&
+                            ((o.innerHTML += t.style),
+                            t.elements.forEach((e) => {
+                              n.unobserve(e),
+                                e.setAttribute(
+                                  "data-rocket-lazy-bg-".concat(t.hash),
+                                  "loaded"
+                                );
+                            }));
+                        });
+                      }
+                    });
+                  },
+                  { rootMargin: t + "px" }
+                );
+                function c() {
+                  0 <
+                    (0 < arguments.length && void 0 !== arguments[0]
+                      ? arguments[0]
+                      : []
+                    ).length &&
+                    r.forEach((t) => {
+                      try {
+                        const e = document.querySelectorAll(t.selector);
+                        e.forEach((e) => {
+                          "loaded" !==
+                            e.getAttribute(
+                              "data-rocket-lazy-bg-".concat(t.hash)
+                            ) &&
+                            "excluded" !==
+                              e.getAttribute(
+                                "data-rocket-lazy-bg-".concat(t.hash)
+                              ) &&
+                            (n.observe(e),
+                            (t.elements || (t.elements = [])).push(e));
+                        });
+                      } catch (e) {
+                        console.error(e);
+                      }
+                    });
+                }
+                c();
+                const a = (function () {
+                  const o = window.MutationObserver;
+                  return function (e, t) {
+                    if (e && 1 === e.nodeType) {
+                      const r = new o(t);
+                      return (
+                        r.observe(e, {
+                          attributes: !0,
+                          childList: !0,
+                          subtree: !0,
+                        }),
+                        r
+                      );
+                    }
+                  };
+                })();
+                (t = document.querySelector("body")), a(t, c);
+              })();
+            },
+            {},
+          ],
+        },
+        {},
+        [1]
+      );
+    </script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/vendor/slick/slick.js?ver=1702826825"
+      id="slick-js-salon-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/modernizr.js?ver=1702826811"
+      id="modernizr-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/handy-collapse@1.1.0/dist/handy-collapse.iife.js?ver=1702826811"
+      id="handy-collapse-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/collapse-table.js?ver=1702826811"
+      id="collapse-table-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/salon-global-plugins.js?ver=1702826811"
+      id="salon-global-plugins-js"
+      defer=""
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="js/jquery.fancybox.min.js"
+      id="fancybox-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/erp.js?ver=1702826811"
+      id="erp-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/vendor/stacktable/stacktable.js?ver=1702826811"
+      id="stacktable-js"
+      defer=""
+    ></script>
+    <script type="text/javascript" id="salon-js-extra">
+      /* <![CDATA[ */
+      var ozy_headerType = {
+        menu_type: "classic",
+        menu_align: "left",
+        smooth_scroll: "",
+        theme_url: "https:\/\/fastlinestudio.pl\/wp-content\/themes\/salon\/",
+        $OZY_WP_AJAX_URL:
+          "https:\/\/fastlinestudio.pl\/wp-admin\/admin-ajax.php",
+        $OZY_WP_IS_HOME: "false",
+        $OZY_WP_HOME_URL: "https:\/\/fastlinestudio.pl\/",
+      };
+      var ozy_Animsition = { is_active: "" };
+      /* ]]> */
+    </script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/salon.js?ver=1702826811"
+      id="salon-js"
+      defer=""
+    ></script>
+    <script
+      type="rocketlazyloadscript"
+      data-minify="1"
+      data-rocket-type="text/javascript"
+      data-rocket-src="https://fastlinestudio.pl/wp-content/cache/min/1/wp-content/themes/salon/scripts/custom.js?ver=1702826811"
+      id="customJS-js"
+      defer=""
+    ></script>
+    <script
+      type="text/javascript"
+      src="js/js_composer_front.min.js"
+      id="wpb_composer_front_js-js"
+      defer=""
+    ></script>
+    <script type="rocketlazyloadscript" data-rocket-type="text/javascript">
+      (function() {
+      				var expirationDate = new Date();
+      				expirationDate.setTime( expirationDate.getTime() + 31536000 * 1000 );
+      				document.cookie = "pll_language=pl; expires=" + expirationDate.toUTCString() + "; path=/";
+      			}());
+    </script>
+    <script type="rocketlazyloadscript"></script>
+    <script>
+      window.lazyLoadOptions = [
+        {
+          elements_selector:
+            "img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",
+          data_src: "lazy-src",
+          data_srcset: "lazy-srcset",
+          data_sizes: "lazy-sizes",
+          class_loading: "lazyloading",
+          class_loaded: "lazyloaded",
+          threshold: 300,
+          callback_loaded: function (element) {
+            if (
+              element.tagName === "IFRAME" &&
+              element.dataset.rocketLazyload == "fitvidscompatible"
+            ) {
+              if (element.classList.contains("lazyloaded")) {
+                if (typeof window.jQuery != "undefined") {
+                  if (jQuery.fn.fitVids) {
+                    jQuery(element).parent().fitVids();
+                  }
+                }
+              }
+            }
+          },
+        },
+        {
+          elements_selector: ".rocket-lazyload",
+          data_src: "lazy-src",
+          data_srcset: "lazy-srcset",
+          data_sizes: "lazy-sizes",
+          class_loading: "lazyloading",
+          class_loaded: "lazyloaded",
+          threshold: 300,
+        },
+      ];
+      window.addEventListener(
+        "LazyLoad::Initialized",
+        function (e) {
+          var lazyLoadInstance = e.detail.instance;
+          if (window.MutationObserver) {
+            var observer = new MutationObserver(function (mutations) {
+              var image_count = 0;
+              var iframe_count = 0;
+              var rocketlazy_count = 0;
+              mutations.forEach(function (mutation) {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                  if (
+                    typeof mutation.addedNodes[i].getElementsByTagName !==
+                    "function"
+                  ) {
+                    continue;
+                  }
+                  if (
+                    typeof mutation.addedNodes[i].getElementsByClassName !==
+                    "function"
+                  ) {
+                    continue;
+                  }
+                  images = mutation.addedNodes[i].getElementsByTagName("img");
+                  is_image = mutation.addedNodes[i].tagName == "IMG";
+                  iframes =
+                    mutation.addedNodes[i].getElementsByTagName("iframe");
+                  is_iframe = mutation.addedNodes[i].tagName == "IFRAME";
+                  rocket_lazy =
+                    mutation.addedNodes[i].getElementsByClassName(
+                      "rocket-lazyload"
+                    );
+                  image_count += images.length;
+                  iframe_count += iframes.length;
+                  rocketlazy_count += rocket_lazy.length;
+                  if (is_image) {
+                    image_count += 1;
+                  }
+                  if (is_iframe) {
+                    iframe_count += 1;
+                  }
+                }
+              });
+              if (image_count > 0 || iframe_count > 0 || rocketlazy_count > 0) {
+                lazyLoadInstance.update();
+              }
+            });
+            var b = document.getElementsByTagName("body")[0];
+            var config = { childList: !0, subtree: !0 };
+            observer.observe(b, config);
+          }
+        },
+        !1
+      );
+    </script>
+    <script data-no-minify="1" async="" src="js/lazyload.min.js"></script>
+    <script>
+      function lazyLoadThumb(e, alt) {
+        var t =
+            '<img data-lazy-src="https://i.ytimg.com/vi_webp/ID/hqdefault.webp" alt="" width="480" height="360"><noscript><img src="https://i.ytimg.com/vi_webp/ID/hqdefault.webp" alt="" width="480" height="360"></noscript>',
+          a = '<button class="play" aria-label="play Youtube video"></button>';
+        t = t.replace('alt=""', 'alt="' + alt + '"');
+        return t.replace("ID", e) + a;
+      }
+      function lazyLoadYoutubeIframe() {
+        var e = document.createElement("iframe"),
+          t = "ID?autoplay=1";
+        t +=
+          0 === this.parentNode.dataset.query.length
+            ? ""
+            : "&" + this.parentNode.dataset.query;
+        e.setAttribute("src", t.replace("ID", this.parentNode.dataset.src)),
+          e.setAttribute("frameborder", "0"),
+          e.setAttribute("allowfullscreen", "1"),
+          e.setAttribute(
+            "allow",
+            "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          ),
+          this.parentNode.parentNode.replaceChild(e, this.parentNode);
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        var e,
+          t,
+          p,
+          a = document.getElementsByClassName("rll-youtube-player");
+        for (t = 0; t < a.length; t++)
+          (e = document.createElement("div")),
+            e.setAttribute("data-id", a[t].dataset.id),
+            e.setAttribute("data-query", a[t].dataset.query),
+            e.setAttribute("data-src", a[t].dataset.src),
+            (e.innerHTML = lazyLoadThumb(a[t].dataset.id, a[t].dataset.alt)),
+            a[t].appendChild(e),
+            (p = e.querySelector(".play")),
+            (p.onclick = lazyLoadYoutubeIframe);
+      });
+    </script>
+  </body>
+</html>
